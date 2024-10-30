@@ -102,13 +102,22 @@ fn extract_genres(document: &Html) -> Result<Vec<String>, FilmError> {
 pub async fn extract_film_meta_datas(film_name: &str) -> Result<FilmMetaData, FilmError> {
     let document = fetch_and_parse_html(film_name).await?;
 
+    extract_datas_from_doc(&document)
+}
+
+pub async fn extract_film_meta_datas_from_url(url: &str) -> Result<FilmMetaData, FilmError> {
+    let html_content = get_html_content(&url).await?;
+    let document = Html::parse_document(&html_content);
+
+    extract_datas_from_doc(&document)
+}
+
+fn extract_datas_from_doc(document: &Html) -> Result<FilmMetaData, FilmError> {
     let release_year = extract_release_year(&document)?;
     let director = extract_director(&document)?;
     let synopsis = extract_synopsis(&document)?;
     let rating = extract_rating(&document)?;
     let genres = extract_genres(&document)?;
-
-    println!("Rating: {}", rating);
 
     Ok(FilmMetaData {
         rating,

@@ -1,6 +1,7 @@
 use crate::{Context, Error};
-use crate::film_scraper::extract_film_meta_datas;
+use crate::film_scraper::{extract_film_meta_datas, extract_film_meta_datas_from_url};
 use crate::film_error::FilmError;
+use crate::utils::is_url;
 
 async fn handle_film_error(ctx: &Context<'_>, error: FilmError) -> Result<(), Error> {
     match error {
@@ -97,8 +98,13 @@ pub async fn genres(ctx: Context<'_>, film_name: String) -> Result<(), Error> {
 }
 
 #[poise::command(prefix_command, track_edits, slash_command)]
-pub async fn all(ctx: Context<'_>, film_name: String) -> Result<(), Error> {
-    match extract_film_meta_datas(&film_name).await {
+pub async fn all(ctx: Context<'_>, film_param: String) -> Result<(), Error> {
+    let metadata_result = if is_url(&film_param) {
+        extract_film_meta_datas_from_url(&film_param).await
+    } else {
+        extract_film_meta_datas(&film_param).await
+    };
+    match metadata_result {
         Ok(metadata) => {
             ctx.say(format!("Rating: {:.2}\nRelease Year: {}\nDirector: {}\nSynopsis: {}\nGenres: {}",
                 metadata.rating,
