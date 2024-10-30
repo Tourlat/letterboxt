@@ -1,7 +1,6 @@
 # letterbot
 
-![bot log][logo_bot_letterboxd]
-
+![bot log](./logo_bot_letterboxd.png)
 
 A simple discord bot for scraping and extracting datas from [Letterboxd](https://letterboxd.com/) pages.
 
