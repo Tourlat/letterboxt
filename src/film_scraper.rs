@@ -1,7 +1,10 @@
 // film_scraper.rs
 
+
 use crate::film_error::FilmError;
 use scraper::{Html, Selector};
+use reqwest::StatusCode;
+
 #[derive(Debug)]
 pub struct FilmMetaData {
     pub rating: f32,
@@ -13,8 +16,12 @@ pub struct FilmMetaData {
 
 async fn get_html_content(url: &str) -> Result<String, FilmError> {
     let response = reqwest::get(url).await.map_err(FilmError::ReqwestError)?;
+    let status = response.status();
     let text = response.text().await.map_err(FilmError::ReqwestError)?;
-    Ok(text)
+    if status == StatusCode::NOT_FOUND || text.contains("<title>Letterboxd - Not Found</title>") {
+        return Err(FilmError::NotFoundError);
+    }
+    Ok(text)    
 }
 
 fn build_film_url(film_name: &str) -> String {

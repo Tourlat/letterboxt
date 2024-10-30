@@ -5,8 +5,20 @@ use crate::utils::is_url;
 
 async fn handle_film_error(ctx: &Context<'_>, error: FilmError) -> Result<(), Error> {
     match error {
-        FilmError::ParseError | FilmError::SelectorError | FilmError::AttributeError | FilmError::ReqwestError(_) => {
-            ctx.say("Film not found").await?;
+        FilmError::ParseError => {
+            ctx.say("Error: Failed to parse the film data.").await?;
+        }
+        FilmError::SelectorError => {
+            ctx.say("Error: Failed to select the required elements from the film data.").await?;
+        }
+        FilmError::AttributeError => {
+            ctx.say("Error: Failed to extract the required attributes from the film data.").await?;
+        }
+        FilmError::ReqwestError(e) => {
+            ctx.say(format!("Error: Network request failed with error: {}", e)).await?;
+        }
+        FilmError::NotFoundError => {
+            ctx.say("Error: Film not found.").await?;
         }
     }
     Ok(())
