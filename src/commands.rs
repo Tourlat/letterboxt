@@ -28,7 +28,7 @@ async fn handle_film_error(ctx: &Context<'_>, error: FilmError) -> Result<(), Er
 #[poise::command(prefix_command, track_edits, slash_command)]
 pub async fn help(
     ctx: Context<'_>,
-    #[description = "Specific command to show help about"]
+    #[description = "Specific command to show help information for the usage" ]
     #[autocomplete = "poise::builtins::autocomplete_command"]
     command: Option<String>,
 ) -> Result<(), Error> {
@@ -36,7 +36,7 @@ pub async fn help(
         ctx,
         command.as_deref(),
         poise::builtins::HelpConfiguration {
-            extra_text_at_bottom: "This is an example bot made to showcase features of my custom Discord bot framework",
+            extra_text_at_bottom: "Help section",
             ..Default::default()
         },
     )
@@ -45,7 +45,11 @@ pub async fn help(
 }
 
 #[poise::command(prefix_command, track_edits, slash_command)]
-pub async fn rate(ctx: Context<'_>, film_name: String) -> Result<(), Error> {
+pub async fn rate(ctx: Context<'_>, 
+#[description = "Find the rating of a film"]
+#[autocomplete = "poise::builtins::autocomplete_command"] 
+film_name: String,
+) -> Result<(), Error> {
     match extract_film_meta_datas(&film_name).await {
         Ok(metadata) => {
             ctx.say(format!("Rating: {:.2}", metadata.rating)).await?;
@@ -58,7 +62,10 @@ pub async fn rate(ctx: Context<'_>, film_name: String) -> Result<(), Error> {
 }
 
 #[poise::command(prefix_command, track_edits, slash_command)]
-pub async fn release_year(ctx: Context<'_>, film_name: String) -> Result<(), Error> {
+pub async fn release_year(ctx: Context<'_>, 
+#[description = "Find the release year a film"]
+#[autocomplete = "poise::builtins::autocomplete_command"] 
+film_name: String) -> Result<(), Error> {
     match extract_film_meta_datas(&film_name).await {
         Ok(metadata) => {
             ctx.say(format!("Release Year: {}", metadata.release_year)).await?;
@@ -71,7 +78,10 @@ pub async fn release_year(ctx: Context<'_>, film_name: String) -> Result<(), Err
 }
 
 #[poise::command(prefix_command, track_edits, slash_command)]
-pub async fn director(ctx: Context<'_>, film_name: String) -> Result<(), Error> {
+pub async fn director(ctx: Context<'_>,
+#[description = "Find the director of a film"]
+#[autocomplete = "poise::builtins::autocomplete_command"] 
+ film_name: String) -> Result<(), Error> {
     match extract_film_meta_datas(&film_name).await {
         Ok(metadata) => {
             ctx.say(format!("Director: {}", metadata.director)).await?;
@@ -84,7 +94,10 @@ pub async fn director(ctx: Context<'_>, film_name: String) -> Result<(), Error> 
 }
 
 #[poise::command(prefix_command, track_edits, slash_command)]
-pub async fn synopsis(ctx: Context<'_>, film_name: String) -> Result<(), Error> {
+pub async fn synopsis(ctx: Context<'_>,
+#[description = "Find the synopsis of a film"]
+#[autocomplete = "poise::builtins::autocomplete_command"] 
+film_name: String) -> Result<(), Error> {
     match extract_film_meta_datas(&film_name).await {
         Ok(metadata) => {
             ctx.say(format!("Synopsis: {}", metadata.synopsis)).await?;
@@ -97,7 +110,10 @@ pub async fn synopsis(ctx: Context<'_>, film_name: String) -> Result<(), Error> 
 }
 
 #[poise::command(prefix_command, track_edits, slash_command)]
-pub async fn genres(ctx: Context<'_>, film_name: String) -> Result<(), Error> {
+pub async fn genres(ctx: Context<'_>,
+#[description = "Find the different genres of a film (action, adventure...)"]
+#[autocomplete = "poise::builtins::autocomplete_command"]  
+film_name: String) -> Result<(), Error> {
     match extract_film_meta_datas(&film_name).await {
         Ok(metadata) => {
             ctx.say(format!("Genres: {}", metadata.genres.join(", "))).await?;
@@ -110,7 +126,10 @@ pub async fn genres(ctx: Context<'_>, film_name: String) -> Result<(), Error> {
 }
 
 #[poise::command(prefix_command, track_edits, slash_command)]
-pub async fn all(ctx: Context<'_>, film_param: String) -> Result<(), Error> {
+pub async fn all(ctx: Context<'_>,
+#[description = "Find multiple information about a film (rating, release year, director, synopsis, genres)"]
+#[autocomplete = "poise::builtins::autocomplete_command"] 
+ film_param: String) -> Result<(), Error> {
     let metadata_result = if is_url(&film_param) {
         extract_film_meta_datas_from_url(&film_param).await
     } else {

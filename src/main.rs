@@ -1,4 +1,5 @@
 use poise::serenity_prelude as serenity;
+
 mod commands;
 mod film_scraper;
 mod film_error;
@@ -11,6 +12,7 @@ type Context<'a> = poise::Context<'a, Data, Error>;
 #[tokio::main]
 async fn main() {
     let token = std::env::var("DISCORD_TOKEN").expect("missing DISCORD_TOKEN");
+    
     let intents = serenity::GatewayIntents::non_privileged();
 
     let framework = poise::Framework::builder()
